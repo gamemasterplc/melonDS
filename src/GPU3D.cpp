@@ -1182,7 +1182,7 @@ void SubmitPolygon()
         // note: the DS performs these divisions using a 32-bit divider
         // thus, if W is greater than 0xFFFF, some precision is sacrificed
         // to make the numbers fit into the divider
-        u32 posX, posY;
+        u64 posX, posY;
         u32 w = vtx->Position[3];
         if (w == 0)
         {
