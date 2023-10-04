@@ -693,10 +693,13 @@ void Unit::CalculateWindowMask(u32 line, u8* windowMask, u8* objWindow)
         u16 x1 = Win1Coords[0];
         u16 x2 = Win1Coords[1];
 		
-		if(WinCnt[1] & 0x40) {
+		if(!IsCentered()) {
 			x1 = ((x1*GPU::WideScreenWidth)+128)/256;
 			x2 = ((x2*GPU::WideScreenWidth)+128)/256;
-		}
+		} else {
+            x1 += UnitCenteredOffset;
+            x2 += UnitCenteredOffset;
+        }
 
         for (int i = 0; i < GPU::WideScreenWidth; i++)
         {
@@ -713,10 +716,13 @@ void Unit::CalculateWindowMask(u32 line, u8* windowMask, u8* objWindow)
         u16 x1 = Win0Coords[0];
         u16 x2 = Win0Coords[1];
 		
-		if(WinCnt[0] & 0x40) {
+		if(!IsCentered()) {
 			x1 = ((x1*GPU::WideScreenWidth)+128)/256;
 			x2 = ((x2*GPU::WideScreenWidth)+128)/256;
-		}
+		} else {
+            x1 += UnitCenteredOffset;
+            x2 += UnitCenteredOffset;
+        }
 		
         for (int i = 0; i < GPU::WideScreenWidth; i++)
         {
@@ -792,12 +798,12 @@ bool Unit::MapOBJVRAMAddr(u32 addr, u32 &bank, u32 &offset)
 	return true;
 }
 
-bool Unit::AllowTextRepeatToggle()
+bool Unit::IsCentered()
 {
 	if(Num == 0) {
-		return (NDS::PowerControl9 & 0x1000) != 0;
+		return (NDS::PowerControl9 & 0x1000) == 0;
 	} else {
-		return (NDS::PowerControl9 & 0x2000) != 0;
+		return (NDS::PowerControl9 & 0x2000) == 0;
 	}
 }
 

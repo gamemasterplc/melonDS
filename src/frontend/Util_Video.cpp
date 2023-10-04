@@ -485,7 +485,10 @@ bool GetTouchCoords(int& x, int& y, bool clamp)
 		if(NDS::PowerControl9 & 0x4000) {
 			vx *= 256.0f/GPU::WideScreenWidth;
 			hvx *= 256.0f/GPU::WideScreenWidth;
-		}
+		} else {
+            vx -= 40.0f;
+            vy -= 40.0f;
+        }
         if (clamp)
         {
             if (HybPrevTouchScreen == 1)
@@ -534,7 +537,9 @@ bool GetTouchCoords(int& x, int& y, bool clamp)
 		
 		if(NDS::PowerControl9 & 0x4000) {
 			vx *= 256.0f/GPU::WideScreenWidth;
-		}
+		} else {
+            vx -= 40.0f;
+        }
 		
         if (clamp)
         {

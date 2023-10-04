@@ -24,6 +24,7 @@
 
 namespace GPU2D
 {
+    const u16 UnitCenteredOffset = 40;
 
 class Unit
 {
@@ -58,7 +59,7 @@ public:
 
     void SampleFIFO(u32 offset, u32 num);
 	
-	bool AllowTextRepeatToggle();
+	bool IsCentered();
 	
     void VBlank();
     virtual void VBlankEnd();
