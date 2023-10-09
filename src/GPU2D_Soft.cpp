@@ -1869,12 +1869,12 @@ void SoftRenderer::DrawSprites(u32 line, Unit* unit)
                     continue;
 
                 s32 xpos = (s32)(attrib[1] << 23) >> 23;
-				if(xpos < -128) {
-					xpos += 512;
-				}
                 if(CurUnit->IsCentered()) {
                     xpos += GPU2D::UnitCenteredOffset;
                 }
+                if(xpos < -128) {
+					xpos += 512;
+				}
                 if (xpos <= -boundwidth || xpos >= GPU::WideScreenWidth)
                     continue;
 
@@ -1899,12 +1899,12 @@ void SoftRenderer::DrawSprites(u32 line, Unit* unit)
                     continue;
 
                 s32 xpos = (s32)(attrib[1] << 23) >> 23;
-				if(xpos < -64) {
-					xpos += 512;
-				}
                 if(CurUnit->IsCentered()) {
                     xpos += GPU2D::UnitCenteredOffset;
                 }
+                if(xpos < -64) {
+					xpos += 512;
+				}
                 if (xpos <= -width || xpos >= GPU::WideScreenWidth)
                     continue;
 
