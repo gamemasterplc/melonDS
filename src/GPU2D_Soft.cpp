@@ -646,7 +646,7 @@ void SoftRenderer::DoCapture(u32 line, u32 width)
 #define DoDrawBG(type, line, num) \
     do \
     { \
-        if (!CurUnit->IsCentered() && (bgCnt[num] & 0x0040) && (CurUnit->BGMosaicSize[0] > 0)) \
+        if (!CurUnit->EnableExtendedFlags() && (bgCnt[num] & 0x0040) && (CurUnit->BGMosaicSize[0] > 0)) \
         { \
             if (GPU3D::CurrentRenderer->Accelerated) DrawBG_##type<true, DrawPixel_Accel>(line, num); \
             else DrawBG_##type<true, DrawPixel_Normal>(line, num); \
@@ -1031,7 +1031,8 @@ void SoftRenderer::DrawBG_Text(u32 line, u32 bgnum)
 	}
 	u16 xoverflowmask = 0;
 	u32 widexmask = (bgcnt & 0x4000) ? 0x100 : 0;
-	if(!CurUnit->IsCentered()) {
+    xoff -= GPU2D::UnitCenteredOffset;
+	if(!CurUnit->EnableExtendedFlags()) {
 		if (!(bgcnt & 0x0040)) {
 			xoverflowmask = ~(0xFF|widexmask);
 		}
@@ -1043,7 +1044,6 @@ void SoftRenderer::DrawBG_Text(u32 line, u32 bgnum)
 		if(widexmask != 0x100 && !CurUnit->EverXScrolled[bgnum]) {
 			xoverflowmask = ~0xFF;
 		}
-        xoff -= GPU2D::UnitCenteredOffset;
 	}
 	
     
@@ -1222,10 +1222,9 @@ void SoftRenderer::DrawBG_Affine(u32 line, u32 bgnum)
     s32 rotX = CurUnit->BGXRefInternal[bgnum-2];
     s32 rotY = CurUnit->BGYRefInternal[bgnum-2];
     
-    if(CurUnit->IsCentered()) {
-        rotX -= (GPU2D::UnitCenteredOffset*rotA);
-        rotY -= (GPU2D::UnitCenteredOffset*rotC);
-    }
+    rotX -= (GPU2D::UnitCenteredOffset*rotA);
+    rotY -= (GPU2D::UnitCenteredOffset*rotC);
+    
     if (bgcnt & 0x0040)
     {
         // vertical mosaic
@@ -1385,10 +1384,8 @@ void SoftRenderer::DrawBG_Extended(u32 line, u32 bgnum)
 				}
 				
 			}
-            if(CurUnit->IsCentered()) {
-                rotX -= (GPU2D::UnitCenteredOffset*rotA);
-                rotY -= (GPU2D::UnitCenteredOffset*rotC);
-            }
+            rotX -= (GPU2D::UnitCenteredOffset*rotA);
+            rotY -= (GPU2D::UnitCenteredOffset*rotC);
             // direct color bitmap
 
             u16 color;
@@ -1427,10 +1424,8 @@ void SoftRenderer::DrawBG_Extended(u32 line, u32 bgnum)
         else
         {
             // 256-color bitmap
-            if(CurUnit->IsCentered()) {
-                rotX -= (GPU2D::UnitCenteredOffset*rotA);
-                rotY -= (GPU2D::UnitCenteredOffset*rotC);
-            }
+            rotX -= (GPU2D::UnitCenteredOffset*rotA);
+            rotY -= (GPU2D::UnitCenteredOffset*rotC);
             
             if (CurUnit->Num) pal = (u16*)&GPU::Palette[0x400];
             else              pal = (u16*)&GPU::Palette[0];
@@ -1474,10 +1469,8 @@ void SoftRenderer::DrawBG_Extended(u32 line, u32 bgnum)
 
         u32 coordmask;
         u32 yshift;
-        if(CurUnit->IsCentered()) {
-            rotX -= (GPU2D::UnitCenteredOffset*rotA);
-            rotY -= (GPU2D::UnitCenteredOffset*rotC);
-        }
+        rotX -= (GPU2D::UnitCenteredOffset*rotA);
+        rotY -= (GPU2D::UnitCenteredOffset*rotC);
         switch (bgcnt & 0xC000)
         {
         case 0x0000: coordmask = 0x07800; yshift = 7; break;
@@ -1600,10 +1593,8 @@ void SoftRenderer::DrawBG_Large(u32 line) // BG is always BG2
     s32 rotX = CurUnit->BGXRefInternal[0];
     s32 rotY = CurUnit->BGYRefInternal[0];
     
-    if(CurUnit->IsCentered()) {
-        rotX -= (GPU2D::UnitCenteredOffset*rotA);
-        rotY -= (GPU2D::UnitCenteredOffset*rotC);
-    }
+    rotX -= (GPU2D::UnitCenteredOffset*rotA);
+    rotY -= (GPU2D::UnitCenteredOffset*rotC);
         
     if (bgcnt & 0x0040)
     {
@@ -1869,9 +1860,7 @@ void SoftRenderer::DrawSprites(u32 line, Unit* unit)
                     continue;
 
                 s32 xpos = (s32)(attrib[1] << 23) >> 23;
-                if(CurUnit->IsCentered()) {
-                    xpos += GPU2D::UnitCenteredOffset;
-                }
+                xpos += GPU2D::UnitCenteredOffset;
                 if(xpos < -128) {
 					xpos += 512;
 				}
@@ -1899,9 +1888,7 @@ void SoftRenderer::DrawSprites(u32 line, Unit* unit)
                     continue;
 
                 s32 xpos = (s32)(attrib[1] << 23) >> 23;
-                if(CurUnit->IsCentered()) {
-                    xpos += GPU2D::UnitCenteredOffset;
-                }
+                xpos += GPU2D::UnitCenteredOffset;
                 if(xpos < -64) {
 					xpos += 512;
 				}

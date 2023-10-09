@@ -59,7 +59,7 @@ public:
 
     void SampleFIFO(u32 offset, u32 num);
 	
-	bool IsCentered();
+	bool EnableExtendedFlags();
 	
     void VBlank();
     virtual void VBlankEnd();

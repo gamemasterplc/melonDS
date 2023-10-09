@@ -693,7 +693,7 @@ void Unit::CalculateWindowMask(u32 line, u8* windowMask, u8* objWindow)
         u16 x1 = Win1Coords[0];
         u16 x2 = Win1Coords[1];
 		
-		if(!IsCentered()) {
+		if(!EnableExtendedFlags() && (WinCnt[1] & 0x40)) {
 			x1 = ((x1*GPU::WideScreenWidth)+128)/256;
 			x2 = ((x2*GPU::WideScreenWidth)+128)/256;
 		} else {
@@ -716,7 +716,7 @@ void Unit::CalculateWindowMask(u32 line, u8* windowMask, u8* objWindow)
         u16 x1 = Win0Coords[0];
         u16 x2 = Win0Coords[1];
 		
-		if(!IsCentered()) {
+		if(!EnableExtendedFlags() && (WinCnt[1] & 0x40)) {
 			x1 = ((x1*GPU::WideScreenWidth)+128)/256;
 			x2 = ((x2*GPU::WideScreenWidth)+128)/256;
 		} else {
@@ -798,7 +798,7 @@ bool Unit::MapOBJVRAMAddr(u32 addr, u32 &bank, u32 &offset)
 	return true;
 }
 
-bool Unit::IsCentered()
+bool Unit::EnableExtendedFlags()
 {
 	if(Num == 0) {
 		return (NDS::PowerControl9 & 0x1000) == 0;
