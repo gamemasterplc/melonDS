@@ -176,7 +176,17 @@ void DMA::Start()
 
     if ((Cnt & 0x00600000) == 0x00600000)
         CurDstAddr = DstAddr;
-
+    
+    //HACK: Detect Display Capture VRAM to VRAM Transfers
+    if((CurSrcAddr & 0xFF000000) == 0x06000000 && (CurDstAddr & 0xFF000000) == 0x06000000) {
+        u32 length;
+        if(Cnt & (1<<26)) {
+            length = IterCount*4;
+        } else {
+            length = IterCount*2;
+        }
+        GPU::LineCaptureMarkVRAMtoVRAMCopy(CurSrcAddr, CurDstAddr, length);
+    }
     //printf("ARM%d DMA%d %08X %02X %08X->%08X %d bytes %dbit\n", CPU?7:9, Num, Cnt, StartMode, CurSrcAddr, CurDstAddr, RemCount*((Cnt&0x04000000)?4:2), (Cnt&0x04000000)?32:16);
 
     IsGXFIFODMA = (CPU == 0 && (CurSrcAddr>>24) == 0x02 && CurDstAddr == 0x04000400 && DstAddrInc == 0);

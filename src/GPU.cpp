@@ -1444,4 +1444,74 @@ void LineCaptureMarkCustom(u32 block, u32 line)
 	VRAMLineCaptureIsCustom[block][line] = true;
 }
 
+void LineCaptureMarkVRAMtoVRAMCopy(u32 src, u32 dst, u32 length)
+{
+    while(length > 0) {
+        u32 src_block, src_offset, dst_block, dst_offset;
+        bool src_map_success, dst_map_success;
+        switch(src & 0x00E00000) {
+            case 0x00000000:
+                src_map_success = GPU2D_A.MapBGVRAMAddr(src, src_block, src_offset);
+                break;
+                
+            case 0x00200000:
+                src_map_success = GPU2D_B.MapBGVRAMAddr(src, src_block, src_offset);
+                break;
+                
+            case 0x00400000:
+                src_map_success = GPU2D_A.MapOBJVRAMAddr(src, src_block, src_offset);
+                break;
+                
+            case 0x00600000:
+                src_map_success = GPU2D_B.MapOBJVRAMAddr(src, src_block, src_offset);
+                break;
+                
+            default:
+            {
+                u32 offset = src-0x6800000;
+                src_block = offset >> 17;
+                src_offset = offset-((src_block << 17));
+                src_map_success = true;
+            }
+                break;
+        }
+        switch(dst & 0x00E00000) {
+            case 0x00000000:
+                dst_map_success = GPU2D_A.MapBGVRAMAddr(dst, dst_block, dst_offset);
+                break;
+                
+            case 0x00200000:
+                dst_map_success = GPU2D_B.MapBGVRAMAddr(dst, dst_block, dst_offset);
+                break;
+                
+            case 0x00400000:
+                dst_map_success = GPU2D_A.MapOBJVRAMAddr(dst, dst_block, dst_offset);
+                break;
+                
+            case 0x00600000:
+                dst_map_success = GPU2D_B.MapOBJVRAMAddr(dst, dst_block, dst_offset);
+                break;
+                
+            default:
+            {
+                u32 offset = dst-0x6800000;
+                dst_block = offset >> 17;
+                dst_offset = offset-((dst_block << 17));
+                dst_map_success = true;
+            }
+                break;
+        }
+        if(src_map_success && dst_map_success && src_block < 4 && dst_block < 4) {
+            u32 src_line = src_offset/512;
+            u32 dst_line = dst_offset/512;
+            VRAMLineCaptureIsCustom[dst_block][dst_line] = VRAMLineCaptureIsCustom[src_block][src_line];
+            memcpy(&VRAMCaptureNative[dst_block][dst_line*512], &VRAMCaptureNative[src_block][src_line*512], 256*2);
+            memcpy(&VRAMCaptureCustom[dst_block][dst_line*GPU::WideScreenWidth*2], &VRAMCaptureCustom[src_block][src_line*GPU::WideScreenWidth*2], GPU::WideScreenWidth*2);
+        }
+        src += 512;
+        dst += 512;
+        length -= 512;
+    }
+}
+
 }

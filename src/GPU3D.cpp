@@ -1427,7 +1427,6 @@ s32 CalcClipX(s64 x, s64 y, s64 z, s64 w)
 {
     s64 result = (x*ClipMatrix[0] + y*ClipMatrix[4] + z*ClipMatrix[8] + w*ClipMatrix[12]);
     if(!(DispCnt & 0x8000)) {
-        //FIXME: Properly align orthographic projections
         result = (result*256)/GPU::WideScreenWidth;
     }
     return result >> 12;
