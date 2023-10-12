@@ -631,7 +631,7 @@ bool LineCaptureIsCustom(u32 block, u32 line);
 
 void LineCaptureMarkCustom(u32 block, u32 line);
 
-void LineCaptureMarkVRAMtoVRAMCopy(u32 src, u32 dst, u32 length);
+void LineCaptureMarkVRAMtoVRAMCopy(u32 src, u32 dst, s32 length);
 
 }
 

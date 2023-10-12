@@ -1444,7 +1444,7 @@ void LineCaptureMarkCustom(u32 block, u32 line)
 	VRAMLineCaptureIsCustom[block][line] = true;
 }
 
-void LineCaptureMarkVRAMtoVRAMCopy(u32 src, u32 dst, u32 length)
+void LineCaptureMarkVRAMtoVRAMCopy(u32 src, u32 dst, s32 length)
 {
     while(length > 0) {
         u32 src_block, src_offset, dst_block, dst_offset;
